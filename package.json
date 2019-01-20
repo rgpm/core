@@ -1,0 +1,15 @@
+{
+  "name": "rgpmcore",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:irremotus/rgpmcore.git",
+  "author": "Kevin Schmittle <kevin@schmittle.net>",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^23.6.0"
+  },
+
+  "scripts": {
+    "test": "jest"
+  }
+}
