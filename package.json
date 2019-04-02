@@ -2,7 +2,7 @@
   "name": "rgpmcore",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "git@github.com:irremotus/rgpmcore.git",
+  "repository": "git@github.com:rgpm/core.git",
   "author": "Kevin Schmittle <kevin@schmittle.net>",
   "license": "LGPL-3.0-only",
   "devDependencies": {
