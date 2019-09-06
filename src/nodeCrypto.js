@@ -7,6 +7,14 @@ let NotImplementedError = require("./notImplementedError.js");
 class NodeCrypto extends Crypto {
     constructor() {
       super();
+       // Determine if crypto is available
+       // https://nodejs.org/api/all.html#crypto_determining_if_crypto_support_is_unavailable
+      try {
+        this.crypto = require("crytpo");
+      } catch (err) {
+        this.crypto = null;
+        throw new NotImplementedError("NodeJS Crytpo has not been implemented")
+      }
     }
   
     /**
@@ -15,8 +23,7 @@ class NodeCrypto extends Crypto {
      * @returns {Buffer} The result of the hash
      */
     digest(input) {
-        const crypto = require("crypto");
-        let hash = crypto.createHash("sha512");
+        let hash = this.crypto.createHash("sha512");
         hash.update(input);
         return hash.digest();
     }
