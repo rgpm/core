@@ -10,10 +10,10 @@ class NodeCrypto extends Crypto {
        // Determine if crypto is available
        // https://nodejs.org/api/all.html#crypto_determining_if_crypto_support_is_unavailable
       try {
-        this.crypto = require("crytpo");
+        this.crypto = require("crypto");
       } catch (err) {
         this.crypto = null;
-        throw new NotImplementedError("NodeJS Crytpo has not been implemented")
+        throw new NotImplementedError("NodeJS Crypto has not been implemented")
       }
     }
   
