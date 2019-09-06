@@ -16,11 +16,47 @@ describe("crypto", () => {
     })
 });
 
+describe("nodeCrypto", () => {
+    it("should import", () => {
+        expect(require("../src/nodeCrypto")).toBeDefined();
+    });
+
+    it("should be a class", () => {
+        const crypto = require("../src/nodeCrypto");
+        expect(typeof crypto).toBe("function");
+        // Classes are not callable; functions are
+        expect(crypto).toThrow(TypeError);
+    });
+
+    it("should produce an object with new", () => {
+        const crypto = require("../src/nodeCrypto");
+        expect(new crypto()).toBeInstanceOf(Object);
+    })
+});
+
+describe("browserCrypto", () => {
+    it("should import", () => {
+        expect(require("../src/browserCrypto")).toBeDefined();
+    });
+
+    it("should be a class", () => {
+        const crypto = require("../src/browserCrypto");
+        expect(typeof crypto).toBe("function");
+        // Classes are not callable; functions are
+        expect(crypto).toThrow(TypeError);
+    });
+
+    it("should produce an object with new", () => {
+        const crypto = require("../src/browserCrypto");
+        expect(new crypto()).toBeInstanceOf(Object);
+    })
+});
+
 describe("crypto methods", () => {
-    let cryptolib = require("../src/crypto");
+    let cryptolib = require("../src/cryptoFactory");
     let crypto = undefined;
     beforeEach(() => {
-        crypto = new cryptolib();
+        crypto = cryptolib.selectCrypto();
     });
 
     let methodNames = [
