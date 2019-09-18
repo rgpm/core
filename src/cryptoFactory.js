@@ -1,7 +1,6 @@
 "use strict"
 
-let Crypto = require('./crypto.js');
-let BroswerCrypto = require('./browserCrypto.js');
+let BrowserCrypto = require('./browserCrypto.js');
 let NodeCrypto= require('./nodeCrypto.js');
 let NotImplementedError = require("./notImplementedError.js");
 
@@ -16,15 +15,13 @@ class CryptoFactory {
         /* Standard WebCrypto */
         try {
             if (crypto.subtle !== undefined) {
-                console.log("selectCrypto: Browser Crypto Selected");
-                return new BroswerCrypto();
+                return new BrowserCrypto();
             }
         } catch (e) { }
 
         /* Node crypto */
         try {
             require('crypto');
-            console.log("selectCrypto: NodeJS Crypto Selected");
             return new NodeCrypto();
         } catch (e) { }
 

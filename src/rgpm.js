@@ -1,10 +1,16 @@
 "use strict"
 
-let Crypto = require('./crypto.js');
+let CryptoFactory = require('./cryptoFactory');
 let NotImplementedError = require("./notImplementedError.js");
 
 
 class RGPM {
+
+    constructor()
+    {
+        let Crypto = CryptoFactory.selectCrypto();
+    }
+    
     addRecord() {
         throw new NotImplementedError("addRecord: Not Implemented");
     }

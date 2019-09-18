@@ -20,26 +20,29 @@ class NodeCrypto extends Crypto {
     /**
      * Generate the cryptographic hash (SHA512) of the input string
      * @param input UTF-8 encoded string
-     * @returns {Buffer} The result of the hash
+     * @returns {Array} The result of the hash
      */
-    digest(input) {
-        let hash = this.crypto.createHash("sha512");
-        hash.update(input);
-        return hash.digest();
+    async digest(input) {
+      const hash = this.crypto.createHash("sha512");
+      hash.update(input);
+      return Array.from(hash.digest());
     }
 
     /**
      * Generate keyed hash (HMAC-SHA512)
      * @param key The key to use
      * @param message The message to hash
-     * @returns {Buffer} The result of the hash
+     * @returns {Array} The result of the hash
      */
-    hmac(key, message) {
-        throw new NotImplementedError(`The method 'hmac' has not been implemented in NodeJS Crypto Class`);
+    async hmac(key, message) {
+      const hmac = this.crypto.createHmac('sha512', key)
+      hmac.update(message);
+      return Array.from(hmac.digest());
     }
 
-
+    source() {
+      return "node";
+    }
   }
 
-
-  module.exports = NodeCrypto;
+module.exports = NodeCrypto;

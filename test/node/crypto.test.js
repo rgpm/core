@@ -1,24 +1,24 @@
 describe("crypto", () => {
     it("should import", () => {
-        expect(require("../src/crypto")).toBeDefined();
+        expect(require("../../src/crypto")).toBeDefined();
     });
 
     it("should be a class", () => {
-        const crypto = require("../src/crypto");
+        const crypto = require("../../src/crypto");
         expect(typeof crypto).toBe("function");
         // Classes are not callable; functions are
         expect(crypto).toThrow(TypeError);
     });
 
     it("should produce an object with new", () => {
-        const crypto = require("../src/crypto");
+        const crypto = require("../../src/crypto");
         expect(new crypto()).toBeInstanceOf(Object);
     })
 });
 
 describe("crypto methods", () => {
-    let notImplementedError = require("../src/notImplementedError");
-    let cryptoLib = require("../src/crypto");
+    let notImplementedError = require("../../src/notImplementedError");
+    let cryptoLib = require("../../src/crypto");
     let crypto = new cryptoLib();
   
 
@@ -35,14 +35,14 @@ describe("crypto methods", () => {
 
 
     describe("digest method", () => {
-        it("should throw error", () => {
-            expect(() => { crypto.hmac("test") }).toThrow(notImplementedError);
+        it("should throw error", async () => {
+            await expect(crypto.digest("test")).rejects.toThrowError();
         });
     });
 
     describe("hmac method", () => {
-        it("should throw error", () => {
-            expect(() => { crypto.hmac("test") }).toThrow(notImplementedError);
+        it("should throw error", async () => {
+            await expect(crypto.hmac("test", "test")).rejects.toThrowError();
         });
     });
 
@@ -55,6 +55,12 @@ describe("crypto methods", () => {
     describe("verify method", () => {
         it("should throw error", () => {
             expect(() => { crypto.verify() }).toThrow(notImplementedError);
+        });
+    });
+
+    describe("source method", () => {
+        it("should throw error", () => {
+            expect(() => { crypto.source() }).toThrow(notImplementedError);
         });
     });
 });
