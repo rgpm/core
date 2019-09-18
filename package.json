@@ -18,18 +18,23 @@
   "scripts": {
     "serve": "node test/server.js",
     "test": "jest"
-
   },
   "dependencies": {},
   "jest": {
     "projects": [
       {
         "displayName": "Node Tests",
-        "testMatch": ["**/test/*.test.js", "**/test/node/*.test.js"]
+        "testMatch": [
+          "**/test/*.test.js",
+          "**/test/node/*.test.js"
+        ]
       },
       {
         "displayName": "Browser Tests",
-        "testMatch": ["**/test/*.test.js", "**/test/browser/*.test.js"],
+        "testMatch": [
+          "**/test/*.test.js",
+          "**/test/browser/*.test.js"
+        ],
         "preset": "jest-puppeteer",
         "globals": {
           "PATH": "http://localhost:4444"
