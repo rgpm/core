@@ -18,7 +18,6 @@ describe("nodeCrypto", () => {
 
 describe("nodeCrypto methods", () => {
     let cryptoLib = require("../../src/nodeCrypto.js");
-    let notImplementedError = require("../../src/notImplementedError");
     let crypto = new cryptoLib();
     let methodNames = [
         "digest",

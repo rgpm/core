@@ -40,6 +40,10 @@ class NodeCrypto extends Crypto {
       return Array.from(hmac.digest());
     }
 
+    /**
+     * Returns the source of the crypto
+     * @returns {String} 
+     */
     source() {
       return "node";
     }

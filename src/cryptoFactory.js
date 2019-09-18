@@ -26,11 +26,7 @@ class CryptoFactory {
         } catch (e) { }
 
         /* If no sources are available, bail out */
-        throw Error("selectCrypto: No crypto sources found");
-    }
-
-    addRecord() {
-        throw new NotImplementedError("addRecord: Not Implemented");
+        throw new NotImplementedError("selectCrypto: No crypto sources found");
     }
 }
 

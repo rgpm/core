@@ -18,7 +18,6 @@ describe("NodeJS cryptoFactory", () => {
 
 describe("NodeJS cryptoFactory methods", () => {
     let cryptolib = require("../../src/cryptoFactory");
-    let notImplementedError = require("../../src/notImplementedError");
     let crypto = undefined;
     beforeEach(() => {
         crypto = cryptolib.selectCrypto();

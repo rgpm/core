@@ -3,10 +3,6 @@
 let NotImplementedError = require("./notImplementedError.js");
 
 class Crypto {
-    constructor() {
-        
-    }
-
     /**
      * Generate the cryptographic hash of the input string.
      * Actual implementations for each crypto source are in their respected classes
@@ -35,6 +31,10 @@ class Crypto {
         throw new NotImplementedError("verify has not been implemented yet");
     }
 
+    /**
+     * Returns the source of the crypto
+     * @returns {String} 
+     */
     source() {
         throw new NotImplementedError("The method `source` has not been implemented yet. This is more of an error of inproper subclassing."); 
     }

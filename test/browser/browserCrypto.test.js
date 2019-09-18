@@ -1,3 +1,7 @@
+/**
+ * Checks the Browser Crypto class directly.
+ */
+
 describe("browserCrypto", () => {
     it("should import", () => {
         expect(require("../../src/browserCrypto")).toBeDefined();
@@ -17,10 +21,9 @@ describe("browserCrypto", () => {
 });
 
 describe("browserCrypto methods", () => {
-    let notImplementedError = require("../../src/notImplementedError");
     beforeEach(async() => {
         await page.goto(PATH, { waitUntil: 'load'});
-        page.on('console', msg => { console.log(msg.text())});
+        page.on('console', msg => { console.log(msg.text())}); //Redirect console events to us
     });
 
     describe("digest method", () => {
