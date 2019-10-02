@@ -6,6 +6,15 @@ let NotImplementedError = require("./notImplementedError.js");
 class BrowserCrypto extends Crypto {
     constructor() {
       super(); 
+      try {
+        if (crypto.subtle !== undefined) {
+          throw new NotImplementedError("Browser crypto not implemented");
+        }
+      } catch (e) { 
+        if (!(e instanceof NotImplementedError)) {
+          throw e;
+        }
+      }
     }
 
     /**
