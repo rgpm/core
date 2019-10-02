@@ -18,7 +18,7 @@ class CryptoFactory {
                 return new BrowserCrypto();
             }
         } catch (e) {
-            if (!(e instanceof NotImplementedError)) {
+            if (!(e instanceof NotImplementedError) && !(e instanceof ReferenceError)) {
                 throw e;
             }
         }
@@ -27,7 +27,11 @@ class CryptoFactory {
         try {
             require('crypto');
             return new NodeCrypto();
-        } catch (e) { }
+        } catch (e) {
+            if (!(e instanceof NotImplementedError)) {
+                throw e;
+            }
+        }
 
         /* If no sources are available, bail out */
         throw new NotImplementedError("selectCrypto: No crypto sources found");
