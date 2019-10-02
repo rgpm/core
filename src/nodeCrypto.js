@@ -7,8 +7,8 @@ let NotImplementedError = require("./notImplementedError.js");
 class NodeCrypto extends Crypto {
     constructor() {
       super();
-       // Determine if crypto is available
-       // https://nodejs.org/api/all.html#crypto_determining_if_crypto_support_is_unavailable
+      // Determine if crypto is available
+      // https://nodejs.org/api/all.html#crypto_determining_if_crypto_support_is_unavailable
       try {
         this.crypto = require("crypto");
       } catch (err) {
