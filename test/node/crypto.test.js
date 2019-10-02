@@ -26,7 +26,8 @@ describe("crypto methods", () => {
         "digest",
         "hmac",
         "null_concat",
-        "verify"
+        "verify",
+        "source",
     ];
 
     test.each(methodNames)("should exist", (methodName) => {
