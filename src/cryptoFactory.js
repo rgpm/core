@@ -17,7 +17,11 @@ class CryptoFactory {
             if (crypto.subtle !== undefined) {
                 return new BrowserCrypto();
             }
-        } catch (e) { }
+        } catch (e) {
+            if (!(e instanceof NotImplementedError)) {
+                throw e;
+            }
+        }
 
         /* Node crypto */
         try {
