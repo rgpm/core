@@ -13,11 +13,6 @@ describe("browserCrypto", () => {
         // Classes are not callable; functions are
         expect(crypto).toThrow(TypeError);
     });
-
-    it("should produce an object with new", () => {
-        const crypto = require("../../src/browserCrypto");
-        expect(new crypto()).toBeInstanceOf(Object);
-    })
 });
 
 describe("browserCrypto methods", () => {
