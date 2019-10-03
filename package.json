@@ -23,17 +23,9 @@
   "jest": {
     "projects": [
       {
-        "displayName": "Node Tests",
+        "displayName": "RGPM Core Tests",
         "testMatch": [
-          "**/test/*.test.js",
-          "**/test/node/*.test.js"
-        ]
-      },
-      {
-        "displayName": "Browser Tests",
-        "testMatch": [
-          "**/test/*.test.js",
-          "**/test/browser/*.test.js"
+          "**/test/*.test.js"
         ],
         "preset": "jest-puppeteer",
         "globals": {
