@@ -6,7 +6,7 @@ class Crypto {
     /**
      * Generate the cryptographic hash of the input string.
      * Actual implementations for each crypto source are in their respected classes
-     * @param input UTF-8 encoded string
+     * @param {string} input UTF-8 encoded string
      * @returns {Array} The result of the hash
      */
     async digest(input) {
@@ -15,8 +15,8 @@ class Crypto {
 
     /**
      * Generate keyed hash (HMAC-SHA512)
-     * @param key The key to use
-     * @param message The message to hash
+     * @param {string} key  The key to use
+     * @param {string} message The message to hash
      * @returns {Array} The result of the hash
      */
     async hmac(key, message) {

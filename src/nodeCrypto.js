@@ -19,7 +19,7 @@ class NodeCrypto extends Crypto {
   
     /**
      * Generate the cryptographic hash (SHA512) of the input string
-     * @param input UTF-8 encoded string
+     * @param {string} input UTF-8 encoded string
      * @returns {Array} The result of the hash
      */
     async digest(input) {
@@ -30,8 +30,8 @@ class NodeCrypto extends Crypto {
 
     /**
      * Generate keyed hash (HMAC-SHA512)
-     * @param key The key to use
-     * @param message The message to hash
+     * @param {string} key The key to use
+     * @param {string} message The message to hash
      * @returns {Array} The result of the hash
      */
     async hmac(key, message) {
