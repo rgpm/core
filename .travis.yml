@@ -1,10 +1,13 @@
 language: minimal
-dist: trusty
+
 services:
   - docker
 
+install:
+  - make
+
 before_install:
-  - docker build . --tag rgpm
+  - make build
 
 script:
-  - docker run --rm rgpm
+  - make test
