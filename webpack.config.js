@@ -1,3 +1,5 @@
+var nodeExternals = require('webpack-node-externals');
+
 module.exports = {
         entry: {
             'app': ['./src/rgpm.js', './src/cryptoFactory']
@@ -6,6 +8,7 @@ module.exports = {
             filename: 'bundle.min.js',
             library: 'app'
         },
-        mode: 'production'
+        mode: 'production',
+        externals: [nodeExternals()]
     }
     
