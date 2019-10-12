@@ -11,8 +11,20 @@ class RGPM {
         let Crypto = CryptoFactory.selectCrypto();
     }
     
-    addRecord() {
+    createRecord() {
         throw new NotImplementedError("addRecord: Not Implemented");
+    }
+
+    readRecord() {
+        throw new NotImplementedError("readRecord: Not Implemented");
+    }
+
+    updateRecord() {
+        throw new NotImplementedError("updateRecord: Not Implemented");
+    }
+
+    deleteRecord() {
+        throw new NotImplementedError("deleteRecord: Not Implemented");
     }
 }
 

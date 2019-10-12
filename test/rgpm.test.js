@@ -23,9 +23,27 @@ describe("RGPM methods", () => {
         rgpm = new rgpmlib();
     });
 
-    describe("addRecord method", () => {
+    describe("createRecord method", () => {
         it("should exist", () => {
-            expect(rgpm.addRecord).toBeDefined();
+            expect(rgpm.createRecord).toBeDefined();
+        });
+    });
+
+    describe("updateRecord method", () => {
+        it("should exist", () => {
+            expect(rgpm.updateRecord).toBeDefined();
+        });
+    });
+
+    describe("readRecord method", () => {
+        it("should exist", () => {
+            expect(rgpm.readRecord).toBeDefined();
+        });
+    });
+
+    describe("deleteRecord method", () => {
+        it("should exist", () => {
+            expect(rgpm.deleteRecord).toBeDefined();
         });
     });
 });
