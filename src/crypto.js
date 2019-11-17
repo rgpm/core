@@ -5,7 +5,7 @@ let NotImplementedError = require("./notImplementedError.js");
 class Crypto {
     /**
      * Generate the cryptographic hash of the input string.
-     * Actual implementations for each crypto source are in their respected classes
+     * Actual implementations for each crypto source are in their respective classes
      * @param {string} input UTF-8 encoded string
      * @returns {Array} The result of the hash
      */
