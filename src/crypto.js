@@ -1,73 +1,55 @@
 "use strict"
 
+let NotImplementedError = require("./notImplementedError.js");
+
 class Crypto {
-    constructor() {
-        this.selectCrypto();
-    }
-
-    selectCrypto() {
-        /* Standard WebCrypto */
-        try {
-            if (crypto.subtle !== undefined) {
-                Crypto.source = "webcrypto";
-                return;
-            }
-        } catch (e) { }
-
-        /* Node crypto */
-        try {
-            require('crypto');
-            Crypto.source = "node";
-            return;
-        } catch (e) { }
-
-        /* If no sources are available, bail out */
-        throw Error("No crypto sources found");
+    /**
+     * Generate the cryptographic hash of the input string.
+     * Actual implementations for each crypto source are in their respective classes
+     * @param {string} input UTF-8 encoded string
+     * @returns {Array} The result of the hash
+     */
+    async digest(input) {
+        throw new NotImplementedError(`The method 'digest' has not been implemented. This is more of an error of inproper subclassing.`);
     }
 
     /**
-     * Generate the cryptographic hash of the input string.
-     * Actual implementations for each crypto source are digest__"source name".
-     * @param input UTF-8 encoded string
-     * @returns {Buffer} The result of the hash
+     * Generate keyed hash (HMAC-SHA512)
+     * @param {string} key  The key to use
+     * @param {string} message The message to hash
+     * @returns {Array} The result of the hash
      */
-    digest(input) {
-        let methodName = `digest__${Crypto.source}`;
-        if (methodName in this) {
-            return this[methodName](input);
-        } else {
-            throw new NotImplementedError(`The method 'digest' has not been implemented for the crypto source '${Crypto.source}'`);
-        }
+    async hmac(key, message) {
+        throw new NotImplementedError(`The method 'hmac' has not been implemented. This is more of an error of inproper subclassing.`);
     }
 
-    digest__node(input) {
-        const crypto = require("crypto");
-        let hash = crypto.createHash("sha512");
-        hash.update(input);
-        return hash.digest();
+    null_concat() {
+        throw new NotImplementedError("null_concat has not been implemented yet");
     }
 
-    hmac() {
-        let methodName = `hmac__${Crypto.source}`;
-        if (methodName in this) {
-            return this[methodName]();
-        } else {
-            throw new NotImplementedError(`The method 'hmac' has not been implemented for the crypto source '${Crypto.source}'`);
-        }
+    verify() { 
+        throw new NotImplementedError("verify has not been implemented yet");
     }
-}
 
-/* Class variables */
-Crypto.source = undefined;
+    /**
+     * Returns the source of the crypto
+     * @returns {String} 
+     */
+    source() {
+        throw new NotImplementedError("The method `source` has not been implemented yet. This is more of an error of inproper subclassing."); 
+    }
 
-class NotImplementedError extends Error {
-    constructor(message) {
-        super();
-        this.name = "NotImplementedError";
-        this.message = message;
+    /**
+     * Converts a buffer to the hex representation
+     * https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+     * @param {Array} buffer 
+     * @returns {String} The hex representation
+     */
+    toHex(buffer) {
+        return buffer.map(b => b.toString(16).padStart(2, '0')).join('');        // convert bytes to hex string
     }
 }
-Crypto.NotImplementedError = NotImplementedError;
+
 
 module.exports = Crypto;
 
