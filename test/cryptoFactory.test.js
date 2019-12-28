@@ -37,6 +37,8 @@ describe("cryptoFactory and crypto methods", () => {
     let methodNames = [
         "digest",
         "hmac",
+        "toHex",
+        "null_concat"
     ];
 
     test.each(methodNames)("should exist", (methodName) => {
@@ -77,6 +79,26 @@ describe("cryptoFactory and crypto methods", () => {
                 const cryptoLib = app.selectCrypto();
                 return cryptoLib.toHex(await cryptoLib.hmac(key, message));
             }, key, message);
+            expect(result).toEqual(output);
+        });
+    });
+
+    describe.each([
+        [["item1", "item2", "item3"], "item1\0item2\0item3"],
+        [["item1", "item2", "test1", "item2", "item3", "item2", "item3", "item2", "item3"], "item1\0item2\0test1\0item2\0item3\0item2\0item3\0item2\0item3"],
+        [["item1", "item2", "item3"], "item1\0item2\0item3"],
+        [["test"], "test"],
+        [[], ""]
+    ])("null_concat should produce correct output", (items, output) => {
+        test("on nodejs", async () => {
+            expect(crypto.null_concat.apply(this, items)).toEqual(output);
+        });
+
+        test("on browser", async () => {
+            const result = await page.evaluate(async (items) => {    
+                const cryptoLib = app.selectCrypto();
+                return cryptoLib.null_concat.apply(this, items);
+            }, items);
             expect(result).toEqual(output);
         });
     });

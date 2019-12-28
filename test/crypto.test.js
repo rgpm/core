@@ -46,17 +46,6 @@ describe("crypto methods", () => {
         });
     });
 
-
-    describe.each([
-        [["item1", "item2", "item3"], "item1\0item2\0item3"],
-        [["item1", "item2", "test1", "item2", "item3", "item2", "item3", "item2", "item3"], "item1\0item2\0test1\0item2\0item3\0item2\0item3\0item2\0item3"],
-        [["item1", "item2", "item3"], "item1\0item2\0item3"],
-        [["test"], "test"],
-        [[], ""]
-    ])("null_concat should produce correct output", (items, output) => {
-        expect(crypto.null_concat.apply(this, items)).toEqual(output);
-    });
-
     describe("verify method", () => {
         it("should throw error", () => {
             expect(() => { crypto.verify() }).toThrow(notImplementedError);
