@@ -20,7 +20,6 @@ describe("crypto methods", () => {
     let notImplementedError = require("../src/notImplementedError");
     let cryptoLib = require("../src/crypto");
     let crypto = new cryptoLib();
-  
 
     let methodNames = [
         "digest",
@@ -47,10 +46,15 @@ describe("crypto methods", () => {
         });
     });
 
-    describe("null_concat method", () => {
-        it("should throw error", () => {
-            expect(() => { crypto.null_concat() }).toThrow(notImplementedError);
-        });
+
+    describe.each([
+        [["item1", "item2", "item3"], "item1\0item2\0item3"],
+        [["item1", "item2", "test1", "item2", "item3", "item2", "item3", "item2", "item3"], "item1\0item2\0test1\0item2\0item3\0item2\0item3\0item2\0item3"],
+        [["item1", "item2", "item3"], "item1\0item2\0item3"],
+        [["test"], "test"],
+        [[], ""]
+    ])("null_concat should produce correct output", (items, output) => {
+        expect(crypto.null_concat.apply(this, items)).toEqual(output);
     });
 
     describe("verify method", () => {

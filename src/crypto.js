@@ -23,8 +23,21 @@ class Crypto {
         throw new NotImplementedError(`The method 'hmac' has not been implemented. This is more of an error of inproper subclassing.`);
     }
 
-    null_concat() {
-        throw new NotImplementedError("null_concat has not been implemented yet");
+    /**
+     * The NULL-CONCAT(...) function returns a byte sequence created by
+     * concatenating its inputs with null bytes between, as done by Yee and
+     * Sitaker (2006). ~ Schmittle, 2018
+     * @param {Array} args A list of string arguments to concat together 
+     * @returns {Array} The result of the concat operation as a string
+     */
+    null_concat(... args) {
+        let result = "";
+        for (let arg of args) {
+            result += arg + "\0";
+        }
+
+        // Remove the last null byte from the string
+        return result.substring(0, result.length - 1);
     }
 
     verify() { 
