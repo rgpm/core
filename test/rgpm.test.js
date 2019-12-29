@@ -33,6 +33,10 @@ describe("RGPM methods", () => {
         it("should exist", () => {
             expect(rgpm.createRecord).toBeDefined();
         });
+
+        /*it("should return a record", () => {
+            expect(rgpm.createRecord(name, locator, identifier)).toEqual();
+        });*/
     });
 
     describe("updateRecord method", () => {

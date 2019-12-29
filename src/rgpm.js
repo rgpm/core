@@ -8,11 +8,11 @@ class RGPM {
 
     constructor()
     {
-        let Crypto = CryptoFactory.selectCrypto();
+        const Crypto = CryptoFactory.selectCrypto();
         let Storage =  this.getStorage();
     }
     
-    createRecord() {
+    createRecord(name, locator, identifier, requirements) {
         throw new NotImplementedError("addRecord: Not Implemented");
     }
 
