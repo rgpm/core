@@ -2,13 +2,14 @@
 
 let CryptoFactory = require('./cryptoFactory');
 let NotImplementedError = require("./notImplementedError.js");
-
+let StorageFactory = require('@rgpm/storage-integrations/src/storageFactory');
 
 class RGPM {
 
     constructor()
     {
         let Crypto = CryptoFactory.selectCrypto();
+        let storage =  StorageFactory.getLocalStorage();
     }
     
     createRecord() {

@@ -24,7 +24,7 @@ RUN yarn install
 
 COPY src /app/src/
 COPY test /app/test/
-
+RUN chown -R test:test ./
 USER test
 
 ENTRYPOINT ["yarn", "test"]

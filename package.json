@@ -35,6 +35,6 @@
     ]
   },
   "dependencies": {
-    "storage-integrations": "rgpm/storage-integrations"
+    "@rgpm/storage-integrations": "^0.1.2"
   }
 }

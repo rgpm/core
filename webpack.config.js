@@ -9,6 +9,8 @@ module.exports = {
             library: 'app'
         },
         mode: 'production',
-        externals: [nodeExternals()]
+        node: {
+            fs: 'empty'
+          }
     }
     

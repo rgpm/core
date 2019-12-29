@@ -17,24 +17,23 @@ describe("cryptoFactory", () => {
 });
 
 describe("cryptoFactory and crypto methods", () => {
-    let cryptolib = require("../src/cryptoFactory");
-    let crypto = undefined;
-    beforeEach(async () => {
-        
+    const cryptolib = require("../src/cryptoFactory");
+
+    /** 
+     * Used for the node tests. This will return the node 
+     * crypto no matter what because it is run in the context
+     * of node. The browser tests also call this, but in the 
+     * context of the browser so the correct class will be 
+     * returned
+     **/
+    let crypto = undefined; 
+    beforeEach(async () => { 
         /** Used for the browser tests */
         await page.goto(PATH, { waitUntil: 'load' }) 
-
-        /** 
-         * Used for the node tests. This will return the node 
-         * crypto no matter what because it is run in the context
-         * of node. The browser tests also call this, but in the 
-         * context of the browser so the correct class will be 
-         * returned
-         **/
-        crypto = cryptolib.selectCrypto(); 
+        crypto = cryptolib.selectCrypto();
     });
 
-    let methodNames = [
+    const methodNames = [
         "digest",
         "hmac",
         "toHex",
@@ -42,7 +41,7 @@ describe("cryptoFactory and crypto methods", () => {
     ];
 
     test.each(methodNames)("should exist", (methodName) => {
-        expect(crypto[methodName]).toBeDefined();
+        expect(cryptolib.selectCrypto()[methodName]).toBeDefined();
     });
 
     describe.each([
@@ -90,7 +89,8 @@ describe("cryptoFactory and crypto methods", () => {
         [["test"], "test"],
         [[], ""]
     ])("null_concat should produce correct output", (items, output) => {
-        test("on nodejs", async () => {
+        
+        test("on nodejs", () => {
             expect(crypto.null_concat.apply(this, items)).toEqual(output);
         });
 
