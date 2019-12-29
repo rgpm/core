@@ -9,7 +9,7 @@ class RGPM {
     constructor()
     {
         let Crypto = CryptoFactory.selectCrypto();
-        let storage =  StorageFactory.getLocalStorage();
+        let Storage =  this.getStorage();
     }
     
     createRecord() {
@@ -26,6 +26,18 @@ class RGPM {
 
     deleteRecord() {
         throw new NotImplementedError("deleteRecord: Not Implemented");
+    }
+
+    getStorage() {
+        let Storage =  StorageFactory.getLocalStorage();
+        let storageLocation = Storage.readFile("storageLocation");
+        switch(storageLocation) {
+            case null:
+            case "localStorage":
+                return Storage;
+            default:
+                throw new NotImplementedError("Specific Storage Location Unknown: " + storageLocation);
+        }
     }
 }
 
