@@ -51,11 +51,11 @@ class Crypto {
     /**
      * Converts a buffer to the hex representation
      * https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
-     * @param {Array} buffer 
+     * @param {Uint8Array} buffer 
      * @returns {String} The hex representation
      */
     toHex(buffer) {
-        return buffer.map(b => b.toString(16).padStart(2, '0')).join('');        // convert bytes to hex string
+        return Array.from(buffer).map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
     }
 }
 

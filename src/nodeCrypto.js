@@ -20,24 +20,36 @@ class NodeCrypto extends Crypto {
     /**
      * Generate the cryptographic hash (SHA512) of the input string
      * @param {string} input UTF-8 encoded string
-     * @returns {Array} The result of the hash
+     * @returns {ArrayBuffer} The result of the hash
      */
     async digest(input) {
       const hash = this.crypto.createHash("sha512");
       hash.update(input);
-      return Array.from(hash.digest());
+      return new Uint8Array(hash.digest());
     }
 
     /**
      * Generate keyed hash (HMAC-SHA512)
      * @param {string} key The key to use
      * @param {string} message The message to hash
-     * @returns {Array} The result of the hash
+     * @returns {ArrayBuffer} The result of the hash
      */
     async hmac(key, message) {
       const hmac = this.crypto.createHmac('sha512', key)
       hmac.update(message);
-      return Array.from(hmac.digest());
+      return new Uint8Array(hmac.digest());
+    }
+
+    /**
+     * Convert a buffer to an arraybuffer
+     * @param {Buffer} buf 
+     */
+    toArrayBuffer(buf) {
+      let ret = new ArrayBuffer(buf.length);
+      for(var i = 0; i < buf.length; i++) {
+        ret[i] = buf[i];
+      }
+      return ret;
     }
 
     /**
