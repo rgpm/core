@@ -21,6 +21,11 @@ describe("RGPM methods", () => {
     const prml_1 = {"character_sets": [ { "name": "lowercase", "characters": ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]}, { "name": "uppercase", "characters": ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]}], "properties": { "maxLength": 23, "minLength": 5, "maxConsecutive": 3}};
     const prml_2 = {"character_sets": [ { "name": "halfnhalf", "characters": ["a","b","c","d","e","f","g","h","i","j","k","l","m", "N","O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]}], "properties": { "maxLength": 7, "minLength": 3, "maxConsecutive": 1} };
     const prml_3 = {"character_sets": [ { "name": "halfnhalf", "characters": ["a","b","c","d","e","f","g","h","i","j","k","l","m", "N","O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]}, {"name:": "numbers", "characters": ["1","2","3","4","5","6","7","8","9","0"]}]};
+    const prml_4 = {"character_sets": [ { "name": "halfnhalf", "characters": ["a","b","c","d","e","f","g","h","i","j","k","l","m", "N","O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]}, {"name:": "numbers", "characters": ["1","2","3","4","5","6","7","8","9","0"]}], "properties": { "maxConsecutive": 1}};
+    const service_record_1 = { "locator": "somebigurl", "identifier": "username", "iter_t": 10};
+    const service_record_2 = { "locator": "google.com", "identifier": "SomeUserNameThatsPropHacked", "iter_t": 10};
+    const service_record_3 = { "locator": "google.com", "identifier": "SomeUserNameThatsPropHacked", "iter_t": 10};
+    const master_password = "SomeSuperDuperMasterPassword!@#123";
 
     beforeEach(() => {
         rgpmlib = require("../src/rgpm");
@@ -105,21 +110,23 @@ describe("RGPM methods", () => {
         });
     });
 
-    describe("verify method", () => {
+    describe("initPass method", () => {
         it.each([
-            [prml_1, "KjKFYMPfgRQIksMiBcCnmzt", true], // Original generated password
-            [prml_1, "Kj", false], // Too short
-            [prml_1, "KjKFYMPfgRQIkssssszt", false], //Too many consecutive characters
-            [prml_1, "KjKFYMPfgRsssssssssssssssssssssssssssssQIksssssMiBcCnmzt", false], // too long
-            [prml_2, "kjkfYmP", true], // Original generated password
-            [prml_2, "kffYmP", false], //Too many consecutive characters
-            [prml_2, "kj", false], //Too short
-            [prml_2, "kjkfYasdfasdfmP", false], //Too long
-            [prml_3, "3ja2ggZfg0Ocg1ce0Sije4dWhkO0X04Oh44Og4WOOSicXmikOc2OQ0P2TTVmkdlc", true], //No properties to check against
-            [prml_3, "3ja2ggZfg0Ocg1ce0SijessssssssssSicXmikOc2OQ0P2TTVmkdlc", true], //No properties to check against
-            [prml_3, "3", true] //No properties to check against
-        ])("should produce the correct result", (prml, password, output) => {
-            expect(rgpm.verify(password, prml)).toEqual(output);
+            [service_record_1, prml_1, 0],
+            [service_record_1, prml_2, 0],
+            [service_record_1, prml_3, 0],
+            [service_record_2, prml_1, 0],
+            [service_record_2, prml_2, 0],
+            [service_record_2, prml_3, 0],
+            [service_record_2, prml_4, 1],
+            [service_record_3, prml_1, 0],
+            [service_record_3, prml_2, 0],
+            [service_record_3, prml_3, 0]            
+        ])("should produce the correct result", async (service_record, prml, iter_r) => {
+            service_record.requirements = prml;
+            await rgpm.initPass(service_record, master_password);
+            expect(service_record.revision).toEqual(1);
+            expect(service_record.iter_r).toEqual(iter_r);
         });
     });
 });

@@ -8,8 +8,8 @@ class RGPM {
 
     constructor()
     {
-        const Crypto = CryptoFactory.selectCrypto();
-        let Storage =  this.getStorage();
+        this.Crypto = CryptoFactory.selectCrypto();
+        this.Storage =  this.getStorage();
     }
     
     createRecord(name, locator, identifier, requirements) {
@@ -80,27 +80,25 @@ class RGPM {
         return true;
     }
 
-    initPass(service_record, master_password) {
-        const master_key = Crypto.digest(master_password);
-        const record_concat = Crypto.null_concat(service_record.locator, service_record.identifier, service_record.revision);
-        const record_hashed = Crypto.digest(record_concat);
+    async initPass(service_record, master_password) {
+        const master_key = await this.Crypto.digest(master_password);
+        service_record.revision = 1;
+        const record_concat = this.Crypto.null_concat(service_record.locator, service_record.identifier, service_record.revision);
+        let record_hashed = await this.Crypto.digest(record_concat);
 
         for(let i = 0; i < service_record.iter_t; i++) {
-            let record_hashed = Crypto.hmac(master_key, record_hashed);
+            record_hashed = await this.Crypto.hmac(master_key, record_hashed);
         }
 
         let password = this.mapHashToPass(record_hashed, service_record.requirements);
-        let meets_requirements = Crypto.verify(password, service_record.requirements);
-
+        let meets_requirements = this.verify(password, service_record.requirements);
         let iter_r = 0;
-
         while (meets_requirements == false) {
-            record_hashed = Crypto.hmac(master_password, record_hashed);
+            record_hashed = this.Crypto.hmac(master_password, record_hashed);
             iter_r = iter_r + 1;
             password = this.mapHashToPass(record_hashed, service_record.requirements);
-            meets_requirements = Crypto.verify(password, service_record.requirements);
+            meets_requirements = this.verify(password, service_record.requirements);
         }
-        
         service_record.iter_r = iter_r;
     }
 
