@@ -40,6 +40,16 @@ class RGPM {
         }
     }
 
+    /**
+     * Checks if the password is acceptable within the PRML.
+     * Supports minOccurs, Max Consecutive, Min/Max length
+     * @param {String} password 
+     * @param {JSON} prml 
+     */
+    verify(password, prml) { 
+        throw new NotImplementedError("verify has not been implemented yet");
+    }
+
     initPass(service_record, master_password) {
         const master_key = Crypto.digest(master_password);
         const record_concat = Crypto.null_concat(service_record.locator, service_record.identifier, service_record.revision);

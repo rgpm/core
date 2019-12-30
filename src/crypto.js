@@ -40,10 +40,6 @@ class Crypto {
         return result.substring(0, result.length - 1);
     }
 
-    verify() { 
-        throw new NotImplementedError("verify has not been implemented yet");
-    }
-
     /**
      * Returns the source of the crypto
      * @returns {String} 
