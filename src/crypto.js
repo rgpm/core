@@ -31,13 +31,7 @@ class Crypto {
      * @returns {Array} The result of the concat operation as a string
      */
     null_concat(... args) {
-        let result = "";
-        for (let arg of args) {
-            result += arg + "\0";
-        }
-
-        // Remove the last null byte from the string
-        return result.substring(0, result.length - 1);
+        return args.join('\0');
     }
 
     /**
