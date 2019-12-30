@@ -48,6 +48,10 @@ class RGPM {
         for(let i = 0; i < service_record.iter_t; i++) {
             let record_hashed = Crypto.hmac(master_key, record_hashed);
         }
+
+        let password = this.mapHashToPass(record_hashed, service_record.requirements);
+        let meets_requirements = Crypto.verify(password, service_record.requirements);
+
     }
 
     combineAllCharacterSets(requirements) {
