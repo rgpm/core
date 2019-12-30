@@ -97,8 +97,8 @@ class RGPM {
     combineAllCharacterSets(requirements) {
         let characters = [];
 
-        for(const set_index in requirements.character_sets) {
-            characters = characters.concat(requirements.character_sets[set_index]["characters"]);
+        for(const set of requirements.character_sets) {
+            characters = characters.concat(set["characters"]);
         }
 
         return characters;
