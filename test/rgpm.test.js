@@ -18,11 +18,9 @@ describe("RGPM", () => {
 
 describe("RGPM methods", () => {
     let rgpm = undefined;
-    const prml_1 = {"max_password_length": 23, "character_sets": [ { "name": "lowercase", "characters": ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]}, { "name": "uppercase", "characters": ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]}]};
-    const prml_2 = {"max_password_length": 7, "character_sets": [ { "name": "halfnhalf", "characters": ["a","b","c","d","e","f","g","h","i","j","k","l","m", "N","O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]}]};
+    const prml_1 = {"character_sets": [ { "name": "lowercase", "characters": ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]}, { "name": "uppercase", "characters": ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]}], "properties": { "maxLength": 23, "minLength": 5, "maxConsecutive": 3}};
+    const prml_2 = {"character_sets": [ { "name": "halfnhalf", "characters": ["a","b","c","d","e","f","g","h","i","j","k","l","m", "N","O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]}], "properties": { "maxLength": 7, "minLength": 3, "maxConsecutive": 1} };
     const prml_3 = {"character_sets": [ { "name": "halfnhalf", "characters": ["a","b","c","d","e","f","g","h","i","j","k","l","m", "N","O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]}, {"name:": "numbers", "characters": ["1","2","3","4","5","6","7","8","9","0"]}]};
-
-
 
     beforeEach(() => {
         rgpmlib = require("../src/rgpm");
@@ -104,6 +102,24 @@ describe("RGPM methods", () => {
             [hash, prml_3, "3ja2ggZfg0Ocg1ce0Sije4dWhkO0X04Oh44Og4WOOSicXmikOc2OQ0P2TTVmkdlc"]
         ])("should produce the correct result", (hash, prml, output) => {
             expect(rgpm.mapHashToPass(hash, prml)).toEqual(output);
+        });
+    });
+
+    describe("verify method", () => {
+        it.each([
+            [prml_1, "KjKFYMPfgRQIksMiBcCnmzt", true], // Original generated password
+            [prml_1, "Kj", false], // Too short
+            [prml_1, "KjKFYMPfgRQIkssssszt", false], //Too many consecutive characters
+            [prml_1, "KjKFYMPfgRsssssssssssssssssssssssssssssQIksssssMiBcCnmzt", false], // too long
+            [prml_2, "kjkfYmP", true], // Original generated password
+            [prml_2, "kffYmP", false], //Too many consecutive characters
+            [prml_2, "kj", false], //Too short
+            [prml_2, "kjkfYasdfasdfmP", false], //Too long
+            [prml_3, "3ja2ggZfg0Ocg1ce0Sije4dWhkO0X04Oh44Og4WOOSicXmikOc2OQ0P2TTVmkdlc", true], //No properties to check against
+            [prml_3, "3ja2ggZfg0Ocg1ce0SijessssssssssSicXmikOc2OQ0P2TTVmkdlc", true], //No properties to check against
+            [prml_3, "3", true] //No properties to check against
+        ])("should produce the correct result", (prml, password, output) => {
+            expect(rgpm.verify(password, prml)).toEqual(output);
         });
     });
 });

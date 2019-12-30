@@ -42,12 +42,42 @@ class RGPM {
 
     /**
      * Checks if the password is acceptable within the PRML.
-     * Supports minOccurs, Max Consecutive, Min/Max length
+     * Supports Max Consecutive, Min/Max length
      * @param {String} password 
      * @param {JSON} prml 
      */
     verify(password, prml) { 
-        throw new NotImplementedError("verify has not been implemented yet");
+
+        // If there are no properties to verify, then it should pass.
+        if(prml.properties == null) {
+            return true;
+        }
+        if(prml.properties.minLength != null) {
+            if(password.length < prml.properties.minLength) {
+                return false;
+            }
+        }
+        if(prml.properties.maxLength != null) {
+            if(password.length > prml.properties.maxLength) {
+                return false;
+            }
+        }
+        if(prml.properties.maxConsecutive != null) {
+            let repeat_count = 0;
+            let repeat_char = '';
+            for(let c of password) {
+                if(c == repeat_char) {
+                    repeat_count++;
+                } else {
+                    repeat_char = c;
+                    repeat_count = 1;
+                }
+                if(repeat_count > prml.properties.maxConsecutive) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     initPass(service_record, master_password) {
@@ -84,8 +114,8 @@ class RGPM {
             password = password + character_set[index];
         }
         let last_index = 64;
-        if (requirements.max_password_length != null) {
-            last_index = Math.min(requirements.max_password_length, 64);
+        if (requirements.properties != null && requirements.properties.maxLength != null) {
+            last_index = Math.min(requirements.properties.maxLength, 64);
         }
         return password.substring(0, last_index);
     }
