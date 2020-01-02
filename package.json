@@ -1,5 +1,5 @@
 {
-  "name": "rgpmcore",
+  "name": "@rgpm/core",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "git@github.com:rgpm/core.git",
