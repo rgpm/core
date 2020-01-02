@@ -27,9 +27,14 @@ describe("RGPM methods", () => {
     const service_record_3 = { "locator": "google.com", "identifier": "SomeUserNameThatsPropHacked", "iter_t": 10};
     const master_password = "SomeSuperDuperMasterPassword!@#123";
 
-    beforeEach(() => {
+    beforeEach(async () => {
         rgpmlib = require("../src/rgpm");
         rgpm = new rgpmlib();
+
+        this.name = "Google";
+        this.locator = "google.com";
+        this.identifier = "gmailAccountName";
+        this.service_record = await rgpm.createRecord(this.name, this.locator, this.identifier, master_password, prml_1);
     });
 
     describe("createRecord method", () => {
@@ -37,14 +42,24 @@ describe("RGPM methods", () => {
             expect(rgpm.createRecord).toBeDefined();
         });
 
-        /*it("should return a record", () => {
-            expect(rgpm.createRecord(name, locator, identifier)).toEqual();
-        });*/
+        it("should return a record", () => {
+            expect(this.service_record.name).toEqual(this.name);
+            expect(this.service_record.locator).toEqual(this.locator);
+            expect(this.service_record.identifier).toEqual(this.identifier);
+            expect(this.service_record.uuid).toBeDefined();
+            expect(this.service_record.revision).toEqual(1);
+        });
     });
 
     describe("updateRecord method", () => {
         it("should exist", () => {
             expect(rgpm.updateRecord).toBeDefined();
+        });
+
+        it("should update a record", () => {
+            this.service_record.name = "Microsoft";
+            rgpm.updateRecord(this.service_record);
+            expect(rgpm.readRecord(this.service_record.uuid).name).toEqual("Microsoft");
         });
     });
 
@@ -52,11 +67,27 @@ describe("RGPM methods", () => {
         it("should exist", () => {
             expect(rgpm.readRecord).toBeDefined();
         });
+
+        it("should read a record", () => {
+            const record = rgpm.readRecord(this.service_record.uuid);
+            expect(record.name).toEqual(this.name);
+            expect(record.locator).toEqual(this.locator);
+            expect(record.identifier).toEqual(this.identifier);
+        });
+
+        it("should return null when a record doesn't exist", () => {
+            expect(rgpm.readRecord("NotaUUID")).toBeNull();
+        });
     });
 
     describe("deleteRecord method", () => {
         it("should exist", () => {
             expect(rgpm.deleteRecord).toBeDefined();
+        });
+
+        it("should delete a record", () => {
+            rgpm.deleteRecord(this.service_record.uuid);
+            expect(rgpm.readRecord(this.service_record.uuid)).toBeNull();
         });
     });
 
@@ -127,6 +158,28 @@ describe("RGPM methods", () => {
             await rgpm.initPass(service_record, master_password);
             expect(service_record.revision).toEqual(1);
             expect(service_record.iter_r).toEqual(iter_r);
+        });
+    });
+
+    describe("genPas method", () => {
+        it.each([
+            [service_record_1, prml_1, "dTrQvhUmkxkyTYtkHDaoVUh"],
+            [service_record_1, prml_2, "dTRQVhU"],
+            [service_record_1, prml_3, "TRVcjhca50O3jOl9RfiOlcl197kXkhfNY19f3kNTUmcZ8mUXjOdOd9hi7Te4W6ZY"],
+            [service_record_2, prml_1, "jclqEpLbMOBbXIefaeDmFKn"],
+            [service_record_2, prml_2, "jclQePl"],
+            [service_record_2, prml_3, "bgP7kh4bOmlbZWYfQUVa0Ujl2349blmlW0RkmdeROObbRb0j0T120TQd2Z1meRdm"],
+            [service_record_2, prml_4, "Wd0RiUi5OWdQO80YWfPfg2SXYddYc3Wcm6aR3WR2STQ9bib5lgfm9lmflRkhSQOl"],
+            [service_record_3, prml_1, "jclqEpLbMOBbXIefaeDmFKn"],
+            [service_record_3, prml_2, "jclQePl"],
+            [service_record_3, prml_3, "bgP7kh4bOmlbZWYfQUVa0Ujl2349blmlW0RkmdeROObbRb0j0T120TQd2Z1meRdm"]            
+        ])("should produce the correct result", async (service_record, prml, output) => {
+            // Setup the service record
+            service_record.requirements = prml;
+            await rgpm.initPass(service_record, master_password);
+
+            //Test the password generation
+            expect(await rgpm.genPass(service_record, master_password)).toEqual(output);
         });
     });
 });

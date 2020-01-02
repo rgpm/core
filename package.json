@@ -35,6 +35,7 @@
     ]
   },
   "dependencies": {
-    "@rgpm/storage-integrations": "^0.1.2"
+    "@rgpm/storage-integrations": "^0.1.2",
+    "uuid": "^3.3.3"
   }
 }

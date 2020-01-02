@@ -1,9 +1,9 @@
 "use strict"
 
-let CryptoFactory = require('./cryptoFactory');
-let NotImplementedError = require("./notImplementedError.js");
-let StorageFactory = require('@rgpm/storage-integrations/src/storageFactory');
-
+const CryptoFactory = require('./cryptoFactory');
+const NotImplementedError = require("./notImplementedError.js");
+const StorageFactory = require('@rgpm/storage-integrations/src/storageFactory');
+const uuidv1 = require('uuid/v1'); //Uses timestamp for uuid
 class RGPM {
 
     constructor()
@@ -12,20 +12,36 @@ class RGPM {
         this.Storage =  this.getStorage();
     }
     
-    createRecord(name, locator, identifier, requirements) {
-        throw new NotImplementedError("addRecord: Not Implemented");
+    async createRecord(name, locator, identifier, master_password, requirements) {
+        // Create the service record
+        const record_uuid = uuidv1();
+        const service_record = { 
+            "name": name,
+            "uuid": record_uuid,
+            "locator": locator,
+            "identifier": identifier,
+            "requirements": requirements
+        };
+
+        // Initialize the service record
+        await this.initPass(service_record, master_password);
+
+        // Store the service record
+        this.Storage.createFile(record_uuid);
+        this.updateRecord(service_record);
+        return service_record;
     }
 
-    readRecord() {
-        throw new NotImplementedError("readRecord: Not Implemented");
+    readRecord(uuid) {
+        return JSON.parse(this.Storage.readFile(uuid));
     }
 
-    updateRecord() {
-        throw new NotImplementedError("updateRecord: Not Implemented");
+    updateRecord(service_record) {
+        this.Storage.updateFile(service_record.uuid, JSON.stringify(service_record));
     }
 
-    deleteRecord() {
-        throw new NotImplementedError("deleteRecord: Not Implemented");
+    deleteRecord(uuid) {
+        this.Storage.deleteFile(uuid);
     }
 
     getStorage() {
@@ -47,7 +63,6 @@ class RGPM {
      * @param {JSON} prml 
      */
     verify(password, prml) { 
-
         // If there are no properties to verify, then it should pass.
         if(prml.properties == null) {
             return true;
@@ -80,6 +95,30 @@ class RGPM {
         return true;
     }
 
+    /**
+     * Generates a password based on the service record and master password
+     * @param {JSON} service_record 
+     * @param {String} master_password 
+     */
+    async genPass(service_record, master_password) {
+        const master_key = await this.Crypto.digest(master_password);
+        const record_concat = this.Crypto.null_concat(service_record.locator, service_record.identifier, service_record.revision);
+        let record_hashed = await this.Crypto.digest(record_concat);
+
+        const num_iterations = service_record.iter_r + service_record.iter_t;
+
+        for(let i = 0; i < num_iterations; i++) {
+            record_hashed = await this.Crypto.hmac(master_key, record_hashed);
+        }
+
+        return this.mapHashToPass(record_hashed, service_record.requirements);
+    }
+
+    /**
+     * Calculates iter_r for the specified service record and master password
+     * @param {JSON} service_record 
+     * @param {String} master_password 
+     */
     async initPass(service_record, master_password) {
         const master_key = await this.Crypto.digest(master_password);
         service_record.revision = 1;
