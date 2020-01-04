@@ -4,6 +4,7 @@ const CryptoFactory = require('./cryptoFactory');
 const NotImplementedError = require("./notImplementedError.js");
 const StorageFactory = require('@rgpm/storage-integrations/src/storageFactory');
 const uuidv1 = require('uuid/v1'); //Uses timestamp for uuid
+const uuidListFilename = "uuidList";
 class RGPM {
 
     constructor()
@@ -29,6 +30,16 @@ class RGPM {
         // Store the service record
         this.Storage.createFile(record_uuid);
         this.updateRecord(service_record);
+
+        // Add the service record uuid to the list
+        let records = this.listRecords();
+        if(records == null) {
+            records = {"records": [record_uuid]};
+        } else {
+            records["records"].push(record_uuid)
+        }
+        this.Storage.updateFile(uuidListFilename, JSON.stringify(records));
+
         return service_record;
     }
 
@@ -41,7 +52,17 @@ class RGPM {
     }
 
     deleteRecord(uuid) {
+        // Delete the record from the list 
+        let records = this.listRecords();
+        records["records"].splice(records["records"].indexOf(uuid), 1);
+        this.Storage.updateFile(uuidListFilename, JSON.stringify(records));
+
         this.Storage.deleteFile(uuid);
+    }
+
+    listRecords() {
+        // Have a list of all uuid inside one file
+        return JSON.parse(this.Storage.readFile(uuidListFilename));
     }
 
     getStorage() {

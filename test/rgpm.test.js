@@ -86,8 +86,20 @@ describe("RGPM methods", () => {
         });
 
         it("should delete a record", () => {
+            const countBeforeDeletion = rgpm.listRecords()["records"].length;
             rgpm.deleteRecord(this.service_record.uuid);
             expect(rgpm.readRecord(this.service_record.uuid)).toBeNull();
+            expect(rgpm.listRecords()["records"].length).toEqual(countBeforeDeletion - 1);
+        });
+    });
+
+    describe("listRecords method", () => {
+        it("should exist", () => {
+            expect(rgpm.listRecords).toBeDefined();
+        });
+
+        it("should return a record", () => {
+            expect(rgpm.listRecords()["records"].length).toBeDefined(); //Due to how the tests are running, we don't know the correct value of records
         });
     });
 
