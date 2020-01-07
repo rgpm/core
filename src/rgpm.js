@@ -13,7 +13,7 @@ class RGPM {
         this.Storage =  this.getStorage();
     }
     
-    async createRecord(name, locator, identifier, master_password, requirements) {
+    async createRecord(name, locator, identifier, iter_t, master_password, requirements) {
         // Create the service record
         const record_uuid = uuidv1();
         const service_record = { 
@@ -21,7 +21,8 @@ class RGPM {
             "uuid": record_uuid,
             "locator": locator,
             "identifier": identifier,
-            "requirements": requirements
+            "iter_t": iter_t,
+            "requirements": requirements,
         };
 
         // Initialize the service record

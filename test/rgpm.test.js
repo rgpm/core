@@ -34,7 +34,8 @@ describe("RGPM methods", () => {
         this.name = "Google";
         this.locator = "google.com";
         this.identifier = "gmailAccountName";
-        this.service_record = await rgpm.createRecord(this.name, this.locator, this.identifier, master_password, prml_1);
+        this.iter_t = 10;
+        this.service_record = await rgpm.createRecord(this.name, this.locator, this.identifier, this.iter_t, master_password, prml_1);
     });
 
     describe("createRecord method", () => {
@@ -47,6 +48,7 @@ describe("RGPM methods", () => {
             expect(this.service_record.locator).toEqual(this.locator);
             expect(this.service_record.identifier).toEqual(this.identifier);
             expect(this.service_record.uuid).toBeDefined();
+            expect(this.service_record.iter_t).toEqual(this.iter_t);
             expect(this.service_record.revision).toEqual(1);
         });
     });
