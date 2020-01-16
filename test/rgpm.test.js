@@ -196,4 +196,25 @@ describe("RGPM methods", () => {
             expect(await rgpm.genPass(service_record, master_password)).toEqual(output);
         });
     });
+
+    describe("updateToNextRevision method", () => {
+        it("should produce the correct result", async () => {
+
+            const old_iter_t = this.service_record.iter_t;
+            const old_iter_r = this.service_record.iter_r;
+            const new_iter_t = 20;
+
+            // Setup the service record
+            await rgpm.updateToNextRevision(this.service_record, master_password, new_iter_t, this.service_record.requirements);
+
+            //Make sure the history was saved for previous password generation
+            expect(this.service_record.prev_iter_t).toEqual(old_iter_t);
+            expect(this.service_record.prev_iter_r).toEqual(old_iter_r);
+            expect(this.service_record.prev_requirements).toEqual(this.service_record.requirements);
+            expect(this.service_record.iter_t).toEqual(new_iter_t);
+
+            // Make sure the values were updated
+            expect(this.service_record.revision).toEqual(2); 
+        });
+    });
 });

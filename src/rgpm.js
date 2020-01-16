@@ -136,6 +136,20 @@ class RGPM {
         return this.mapHashToPass(record_hashed, service_record.requirements);
     }
 
+    async updateToNextRevision(service_record, master_password, new_iter_t, new_requirements) {
+        // Update service record
+        service_record.revision += 1;
+        service_record.prev_iter_r = service_record.iter_r;
+        service_record.prev_iter_t = service_record.iter_t;
+        service_record.prev_requirements = service_record.requirements;
+        service_record.requirements = new_requirements;
+        service_record.iter_t = new_iter_t;
+
+        await this.initPass(service_record, master_password);
+    }
+
+    
+
     /**
      * Calculates iter_r for the specified service record and master password
      * @param {JSON} service_record 
