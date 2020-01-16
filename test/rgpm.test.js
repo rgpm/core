@@ -175,7 +175,7 @@ describe("RGPM methods", () => {
         });
     });
 
-    describe("genPas method", () => {
+    describe("genPass method", () => {
         it.each([
             [service_record_1, prml_1, "dTrQvhUmkxkyTYtkHDaoVUh"],
             [service_record_1, prml_2, "dTRQVhU"],
