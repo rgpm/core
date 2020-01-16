@@ -143,7 +143,9 @@ class RGPM {
      */
     async initPass(service_record, master_password) {
         const master_key = await this.Crypto.digest(master_password);
-        service_record.revision = 1;
+        if(service_record.revision === undefined) {
+            service_record.revision = 1;
+        }
         const record_concat = this.Crypto.null_concat(service_record.locator, service_record.identifier, service_record.revision);
         let record_hashed = await this.Crypto.digest(record_concat);
 
