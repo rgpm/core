@@ -136,6 +136,29 @@ class RGPM {
         return this.mapHashToPass(record_hashed, service_record.requirements);
     }
 
+    /**
+     * Generates the previous password based on the service record and master password
+     * @param {JSON} service_record 
+     * @param {String} master_password 
+     */
+    async genPrevPass(service_record, master_password) {
+        if(service_record.revision <= 1)
+        {
+            throw new Error("Revision must be greater than 1");
+        }
+        const master_key = await this.Crypto.digest(master_password);
+        const record_concat = this.Crypto.null_concat(service_record.locator, service_record.identifier, service_record.revision - 1);
+        let record_hashed = await this.Crypto.digest(record_concat);
+
+        const num_iterations = service_record.prev_iter_r + service_record.prev_iter_t;
+
+        for(let i = 0; i < num_iterations; i++) {
+            record_hashed = await this.Crypto.hmac(master_key, record_hashed);
+        }
+
+        return this.mapHashToPass(record_hashed, service_record.prev_requirements);
+    }
+
     async updateToNextRevision(service_record, master_password, new_iter_t, new_requirements) {
         // Update service record
         service_record.revision += 1;
@@ -144,11 +167,8 @@ class RGPM {
         service_record.prev_requirements = service_record.requirements;
         service_record.requirements = new_requirements;
         service_record.iter_t = new_iter_t;
-
         await this.initPass(service_record, master_password);
     }
-
-    
 
     /**
      * Calculates iter_r for the specified service record and master password

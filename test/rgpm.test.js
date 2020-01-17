@@ -22,11 +22,10 @@ describe("RGPM methods", () => {
     const prml_2 = {"character_sets": [ { "name": "halfnhalf", "characters": ["a","b","c","d","e","f","g","h","i","j","k","l","m", "N","O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]}], "properties": { "maxLength": 7, "minLength": 3, "maxConsecutive": 1} };
     const prml_3 = {"character_sets": [ { "name": "halfnhalf", "characters": ["a","b","c","d","e","f","g","h","i","j","k","l","m", "N","O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]}, {"name:": "numbers", "characters": ["1","2","3","4","5","6","7","8","9","0"]}]};
     const prml_4 = {"character_sets": [ { "name": "halfnhalf", "characters": ["a","b","c","d","e","f","g","h","i","j","k","l","m", "N","O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]}, {"name:": "numbers", "characters": ["1","2","3","4","5","6","7","8","9","0"]}], "properties": { "maxConsecutive": 1}};
-    const service_record_1 = { "locator": "somebigurl", "identifier": "username", "iter_t": 10};
-    const service_record_2 = { "locator": "google.com", "identifier": "SomeUserNameThatsPropHacked", "iter_t": 10};
-    const service_record_3 = { "locator": "google.com", "identifier": "SomeUserNameThatsPropHacked", "iter_t": 10};
     const master_password = "SomeSuperDuperMasterPassword!@#123";
-
+    service_record_1 = { "locator": "somebigurl", "identifier": "username", "iter_t": 10};
+    service_record_2 = { "locator": "google.com", "identifier": "SomeUserNameThatsPropHacked", "iter_t": 10};
+    service_record_3 = { "locator": "google.com", "identifier": "SomeUserNameThatsPropHacked", "iter_t": 10};
     beforeEach(async () => {
         rgpmlib = require("../src/rgpm");
         rgpm = new rgpmlib();
@@ -36,6 +35,7 @@ describe("RGPM methods", () => {
         this.identifier = "gmailAccountName";
         this.iter_t = 10;
         this.service_record = await rgpm.createRecord(this.name, this.locator, this.identifier, this.iter_t, master_password, prml_1);
+        
     });
 
     describe("createRecord method", () => {
@@ -167,7 +167,8 @@ describe("RGPM methods", () => {
             [service_record_3, prml_1, 0],
             [service_record_3, prml_2, 0],
             [service_record_3, prml_3, 0]            
-        ])("should produce the correct result", async (service_record, prml, iter_r) => {
+        ])("should produce the correct result", async (record, prml, iter_r) => {
+            const service_record = Object.assign({}, record);
             service_record.requirements = prml;
             await rgpm.initPass(service_record, master_password);
             expect(service_record.revision).toEqual(1);
@@ -188,18 +189,56 @@ describe("RGPM methods", () => {
             [service_record_3, prml_2, "jclQePl"],
             [service_record_3, prml_3, "bgP7kh4bOmlbZWYfQUVa0Ujl2349blmlW0RkmdeROObbRb0j0T120TQd2Z1meRdm"]            
         ])("should produce the correct result", async (service_record, prml, output) => {
+            const record = Object.assign({}, service_record);
             // Setup the service record
-            service_record.requirements = prml;
-            await rgpm.initPass(service_record, master_password);
+            record.requirements = prml;
+            await rgpm.initPass(record, master_password);
 
             //Test the password generation
-            expect(await rgpm.genPass(service_record, master_password)).toEqual(output);
+            expect(await rgpm.genPass(record, master_password)).toEqual(output);
+        });
+    });
+
+    describe("genPrevPass method", () => {
+        it.each([
+            [service_record_1, prml_1, "dTrQvhUmkxkyTYtkHDaoVUh"],
+            [service_record_1, prml_2, "dTRQVhU"],
+            [service_record_1, prml_3, "TRVcjhca50O3jOl9RfiOlcl197kXkhfNY19f3kNTUmcZ8mUXjOdOd9hi7Te4W6ZY"],
+            [service_record_2, prml_1, "jclqEpLbMOBbXIefaeDmFKn"],
+            [service_record_2, prml_2, "jclQePl"],
+            [service_record_2, prml_3, "bgP7kh4bOmlbZWYfQUVa0Ujl2349blmlW0RkmdeROObbRb0j0T120TQd2Z1meRdm"],
+            [service_record_2, prml_4, "Wd0RiUi5OWdQO80YWfPfg2SXYddYc3Wcm6aR3WR2STQ9bib5lgfm9lmflRkhSQOl"],
+            [service_record_3, prml_1, "jclqEpLbMOBbXIefaeDmFKn"],
+            [service_record_3, prml_2, "jclQePl"],
+            [service_record_3, prml_3, "bgP7kh4bOmlbZWYfQUVa0Ujl2349blmlW0RkmdeROObbRb0j0T120TQd2Z1meRdm"]            
+        ])("should produce the correct result", async (service_record, prml, output) => {
+            // Setup the service record and test the current revision (same as genPass testing method)
+            const record = Object.assign({}, service_record);
+            record.requirements = prml;
+            await rgpm.initPass(record, master_password);
+            expect(await rgpm.genPass(record, master_password)).toEqual(output); //The current password should be the same
+
+
+            // Update to the next revision
+            const new_iter_t = 5;
+            await rgpm.updateToNextRevision(record, master_password, new_iter_t, record.requirements);
+
+            //Test the previous password generation which should be the same as the above test.
+            expect(await rgpm.genPrevPass(record, master_password)).toEqual(output);
+        });
+
+        it("should throw an error with revision 1", async () => {
+            await expect(rgpm.genPrevPass(this.service_record, master_password)).rejects.toThrow("Revision must be greater than 1");
+        });
+
+        it("should throw an error with revision less than 1", async () => {
+            this.service_record.revision = -1;
+            await expect(rgpm.genPrevPass(this.service_record, master_password)).rejects.toThrow("Revision must be greater than 1");
         });
     });
 
     describe("updateToNextRevision method", () => {
         it("should produce the correct result", async () => {
-
             const old_iter_t = this.service_record.iter_t;
             const old_iter_r = this.service_record.iter_r;
             const new_iter_t = 20;
