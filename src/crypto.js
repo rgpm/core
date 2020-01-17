@@ -23,12 +23,15 @@ class Crypto {
         throw new NotImplementedError(`The method 'hmac' has not been implemented. This is more of an error of inproper subclassing.`);
     }
 
-    null_concat() {
-        throw new NotImplementedError("null_concat has not been implemented yet");
-    }
-
-    verify() { 
-        throw new NotImplementedError("verify has not been implemented yet");
+    /**
+     * The NULL-CONCAT(...) function returns a byte sequence created by
+     * concatenating its inputs with null bytes between, as done by Yee and
+     * Sitaker (2006). ~ Schmittle, 2018
+     * @param {Array} args A list of string arguments to concat together 
+     * @returns {Array} The result of the concat operation as a string
+     */
+    null_concat(... args) {
+        return args.join('\0');
     }
 
     /**
@@ -42,11 +45,11 @@ class Crypto {
     /**
      * Converts a buffer to the hex representation
      * https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
-     * @param {Array} buffer 
+     * @param {Uint8Array} buffer 
      * @returns {String} The hex representation
      */
     toHex(buffer) {
-        return buffer.map(b => b.toString(16).padStart(2, '0')).join('');        // convert bytes to hex string
+        return Array.from(buffer).map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
     }
 }
 

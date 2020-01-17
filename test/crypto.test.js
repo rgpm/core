@@ -20,13 +20,11 @@ describe("crypto methods", () => {
     let notImplementedError = require("../src/notImplementedError");
     let cryptoLib = require("../src/crypto");
     let crypto = new cryptoLib();
-  
 
     let methodNames = [
         "digest",
         "hmac",
         "null_concat",
-        "verify",
         "source",
     ];
 
@@ -44,18 +42,6 @@ describe("crypto methods", () => {
     describe("hmac method", () => {
         it("should throw error", async () => {
             await expect(crypto.hmac("test", "test")).rejects.toThrowError();
-        });
-    });
-
-    describe("null_concat method", () => {
-        it("should throw error", () => {
-            expect(() => { crypto.null_concat() }).toThrow(notImplementedError);
-        });
-    });
-
-    describe("verify method", () => {
-        it("should throw error", () => {
-            expect(() => { crypto.verify() }).toThrow(notImplementedError);
         });
     });
 

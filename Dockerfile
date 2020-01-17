@@ -1,5 +1,7 @@
 FROM node:12-slim
 
+RUN apt-get update && apt-get install -y wget gnupg2
+
 # Install chrome for puppeteer tests
 # From https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
@@ -24,7 +26,7 @@ RUN yarn install
 
 COPY src /app/src/
 COPY test /app/test/
-
+RUN chown -R test:test ./
 USER test
 
 ENTRYPOINT ["yarn", "test"]

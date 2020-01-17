@@ -17,30 +17,31 @@ describe("cryptoFactory", () => {
 });
 
 describe("cryptoFactory and crypto methods", () => {
-    let cryptolib = require("../src/cryptoFactory");
-    let crypto = undefined;
-    beforeEach(async () => {
-        
+    const cryptolib = require("../src/cryptoFactory");
+
+    /** 
+     * Used for the node tests. This will return the node 
+     * crypto no matter what because it is run in the context
+     * of node. The browser tests also call this, but in the 
+     * context of the browser so the correct class will be 
+     * returned
+     **/
+    let crypto = undefined; 
+    beforeEach(async () => { 
         /** Used for the browser tests */
         await page.goto(PATH, { waitUntil: 'load' }) 
-
-        /** 
-         * Used for the node tests. This will return the node 
-         * crypto no matter what because it is run in the context
-         * of node. The browser tests also call this, but in the 
-         * context of the browser so the correct class will be 
-         * returned
-         **/
-        crypto = cryptolib.selectCrypto(); 
+        crypto = cryptolib.selectCrypto();
     });
 
-    let methodNames = [
+    const methodNames = [
         "digest",
         "hmac",
+        "toHex",
+        "null_concat"
     ];
 
     test.each(methodNames)("should exist", (methodName) => {
-        expect(crypto[methodName]).toBeDefined();
+        expect(cryptolib.selectCrypto()[methodName]).toBeDefined();
     });
 
     describe.each([
@@ -77,6 +78,27 @@ describe("cryptoFactory and crypto methods", () => {
                 const cryptoLib = app.selectCrypto();
                 return cryptoLib.toHex(await cryptoLib.hmac(key, message));
             }, key, message);
+            expect(result).toEqual(output);
+        });
+    });
+
+    describe.each([
+        [["item1", "item2", "item3"], "item1\0item2\0item3"],
+        [["item1", "item2", "test1", "item2", "item3", "item2", "item3", "item2", "item3"], "item1\0item2\0test1\0item2\0item3\0item2\0item3\0item2\0item3"],
+        [["item1", "item2", "item3"], "item1\0item2\0item3"],
+        [["test"], "test"],
+        [[], ""]
+    ])("null_concat should produce correct output", (items, output) => {
+        
+        test("on nodejs", () => {
+            expect(crypto.null_concat.apply(this, items)).toEqual(output);
+        });
+
+        test("on browser", async () => {
+            const result = await page.evaluate(async (items) => {    
+                const cryptoLib = app.selectCrypto();
+                return cryptoLib.null_concat.apply(this, items);
+            }, items);
             expect(result).toEqual(output);
         });
     });

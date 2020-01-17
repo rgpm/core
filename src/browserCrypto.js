@@ -22,12 +22,12 @@ class BrowserCrypto extends Crypto {
      * https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest and
      * adapted to not require the async keyword
      * @param {string} input UTF-8 encoded string
-     * @returns {Array} The result of the hash
+     * @returns {ArrayBuffer} The result of the hash
      */
     async digest(input) {
       const msgUint8 = new TextEncoder().encode(input);                                    // encode as (utf-8) Uint8Array
       return await crypto.subtle.digest('sha-512', msgUint8).then(function(hashBuffer) {   // hash the message
-        return Array.from(new Uint8Array(hashBuffer));                                     // convert buffer to byte array
+        return new Uint8Array(hashBuffer);
       });           
     }
 
@@ -35,7 +35,7 @@ class BrowserCrypto extends Crypto {
      * Generate keyed hash (HMAC-SHA512)
      * @param {string} key The key to use
      * @param {string} message The message to hash
-     * @returns {Array} The result of the hash
+     * @returns {ArrayBuffer} The result of the hash
      */
     async hmac(key, message) {
       // Create the key (https://github.com/danharper/hmac-examples#javascript-es6)
@@ -49,9 +49,7 @@ class BrowserCrypto extends Crypto {
 
         // Sign the data with the key
         return crypto.subtle.sign({ "name": "HMAC" }, cryptoKey, messageBytes).then(async function(hmac) {
-
-          //Return in a format consistent with everything else
-          return Array.from(new Uint8Array(hmac));
+          return new Uint8Array(hmac);
         });
       });
     }

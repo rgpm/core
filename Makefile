@@ -15,7 +15,7 @@ clean:
 	rm -rf .build-tmp
 
 clean-docker:
-	docker rmim rgpm:core-test
+	docker rmi rgpm:core-test
 
 clean-all: clean clean-docker
 
