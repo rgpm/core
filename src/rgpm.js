@@ -11,6 +11,7 @@ class RGPM {
     {
         this.Crypto = CryptoFactory.selectCrypto();
         this.Storage =  this.getStorage();
+        this.iter_t = null;
     }
     
     async createRecord(name, locator, identifier, iter_t, master_password, requirements) {
@@ -223,6 +224,24 @@ class RGPM {
             last_index = Math.min(requirements.properties.maxLength, 64);
         }
         return password.substring(0, last_index);
+    }
+
+    /**
+     * Determine the best iter-t value for the current machine.
+     */
+    async calculateIterT() {
+        this.cancelCalculation = false;
+        let iter_t = 0;        
+        const started = Date.now();
+        let record_hashed = await this.Crypto.digest("ExampleRecordConcatResult");
+        while(true) {
+            iter_t++;
+            record_hashed = await this.Crypto.hmac("ExampleMasterKey", record_hashed);
+            if(Date.now() - started > 2000) {
+                break;
+            }
+        }
+        return iter_t;
     }
 }
 

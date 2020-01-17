@@ -256,4 +256,14 @@ describe("RGPM methods", () => {
             expect(this.service_record.revision).toEqual(2); 
         });
     });
+
+    describe("calculateIterT method", () => {
+        it("should return within 2.5 seconds", async () => {
+            expect(await rgpm.calculateIterT()).not.toEqual(0);
+        }, 2500);
+
+        it("should be defined", () => {
+            expect(rgpm.calculateIterT).toBeDefined();
+        })
+    });
 });
